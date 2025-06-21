@@ -115,7 +115,6 @@ public class KthElementInSortedArray {
             int r2 = mid2<n2?arr2[mid2]:Integer.MAX_VALUE;
             if(l1<=r2 && l2<=r1)
             {   
-                
                 return Math.max(l1,l2);
             }
             else if(l1>r2)
