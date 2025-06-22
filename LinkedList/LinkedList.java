@@ -508,18 +508,251 @@ public class LinkedList {
         deleteNod.next = null;
         return head;
     }
+
+    public Node deleteMiddleNodeBrute(Node head)
+    {
+        if(head==null || head.next==null)
+        {
+            return null;
+        }
+
+        int count = 0;
+        Node temp = head;
+        while(temp!=null)
+        {
+            count++;
+            temp = temp.next;
+        }
+        int mid = count/2;
+        temp = head;
+        while(temp!=null)
+        {
+            mid--;
+            if(mid==0)
+            {
+                break;
+            }
+            temp = temp.next;
+        }
+
+        Node deleteNode = temp.next;
+        temp.next = temp.next.next;
+        deleteNode.next = null;
+        return head;
+    }
+
+    public Node deleteMiddleNode(Node head)
+    {
+        if(head==null || head.next==null)
+        {
+            return null;
+        }
+
+        Node slow = head;
+        Node fast = head;
+        fast = fast.next.next;
+        while(fast!=null && fast.next!=null)
+        {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+
+        Node deleteNode = slow.next;
+        slow.next = slow.next.next;
+        deleteNode.next = null;
+        return head;
+    }
+
+    public void mergeArray(ArrayList<Integer> arr,int left,int mid,int right)
+    {
+        int i = left;
+        int j = mid+1;
+        ArrayList<Integer> result = new ArrayList<>();
+        while(i<=mid && j<=right)
+        {
+            if(arr.get(i)<=arr.get(j))
+            {
+                result.add(arr.get(i));
+                i++;
+            }
+            else
+            {
+                result.add(arr.get(j));
+                j++;
+            }
+        }
+
+        while(i<=mid)
+        {
+            result.add(arr.get(i));
+            i++; 
+        }
+        while(j<=right)
+        {
+            result.add(arr.get(j));
+            j++;
+        }
+        i = 0;
+        for(;i<result.size();i++)
+        {
+            arr.set(left+i,result.get(i));
+        }
+    }
+
+    public void sortArray(ArrayList<Integer> arr,int left,int right)
+    {
+        if(left<right)
+        {
+            int mid = (left+right)/2;
+            sortArray(arr, left, mid);
+            sortArray(arr, mid+1, right);
+            mergeArray(arr,left,mid,right);
+        }
+    }
+    public Node sortLL(Node head)
+    {
+        if(head==null || head.next==null)
+        {
+            return head;
+        }
+        ArrayList<Integer> arr = new ArrayList<>();
+        Node temp = head;
+        while(temp!=null)
+        {
+            arr.add(temp.data);
+            temp = temp.next;
+        }
+        sortArray(arr,0,arr.size()-1);
+        temp = head;
+        int i =0;
+        while(temp!=null)
+        {
+            temp.data = arr.get(i);
+            temp = temp.next;
+            i++;
+        }
+        return head;
+    }
+    public Node findMiddle(Node head)
+    {
+        if(head==null||head.next==null)
+        {
+            return head;
+        }
+        Node slow = head;
+        Node fast = head;
+        while(fast.next!=null && fast.next.next!=null)
+        {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return slow;
+    }
+
+    public Node mergeLL(Node left,Node right)
+    {   
+        Node dummyNode = new Node(-1);
+        Node temp = dummyNode;
+        while(left!=null && right!=null)
+        {
+            if(left.data<=right.data)
+            {
+                temp.next = left;
+                left = left.next;
+            }
+            else
+            {
+                temp.next = right;
+                right = right.next;
+            }
+            temp = temp.next;
+        }
+
+        while(left!=null)
+        {
+            temp.next = left;
+            left = null;
+        }
+        while(right!=null)
+        {
+            temp.next = right;
+            right = null;
+        }
+        return dummyNode.next;
+    }
+    public Node sortLLOpt(Node head)
+    {
+        if(head==null || head.next==null)
+        {
+            return head;
+        }
+        Node middleNode = findMiddle(head);
+        Node leftHead = head;
+        Node rightHead = middleNode.next;
+        middleNode.next = null;
+        leftHead = sortLLOpt(leftHead);
+        rightHead = sortLLOpt(rightHead);
+        // System.out.println("sushsnat");
+        return mergeLL(leftHead,rightHead);
+    }
+
+    public Node sortZeroOnesTwos(Node head)
+    {
+        if(head==null || head.next==null)
+        {
+            return head;
+        }
+
+        int count0 = 0;
+        int count1 = 0;
+        int count2 = 0;
+        Node temp = head;
+        while(temp!=null)
+        {
+            if(temp.data==0) count0++;
+            else if(temp.data==1) count1++;
+            else count2++;
+            temp=temp.next;
+        }
+
+        temp = head;
+        while(temp!=null)
+        {
+            if(count0!=0)
+            {
+                temp.data=0;
+                count0--;
+            }
+            else if(count1!=0)
+            {
+                temp.data = 1;
+                count1--;
+            }
+            else
+            {
+                temp.data = 2;
+                count2--;
+            }
+            temp=temp.next;
+        }
+        return head;
+    }
     public static void main(String[] args)
     {
-        int[] arr = new int[]{1,8,2,3};
+        int[] arr = new int[]{2,1,1,1};
         LinkedList l = new LinkedList();
         l.head = l.convertArrayLL(arr);
+        // l.head = l.sortLLOpt(l.head);
+        l.head = l.sortZeroOnesTwos(l.head);
+        l.printLL(l.head);
+        // l.head = l.deleteMiddleNode(l.head);
         // l.head = l.convertArrayLL(arr);
         // l.head = l.oddEvenLLOpt(l.head);
-        int k;
-        Scanner sc = new Scanner(System.in);
-        k = sc.nextInt();
-        l.head = l.removeKthElementOpt(l.head,k);
-        l.printLL(l.head);
+        // int k;
+        // Scanner sc = new Scanner(System.in);
+        // k = sc.nextInt();
+        // l.head = l.removeKthElementOpt(l.head,k);
+       
         // Node n1 = new Node(0);
         // Node n2 = new Node(1);
         // Node n3 = new Node(2);
