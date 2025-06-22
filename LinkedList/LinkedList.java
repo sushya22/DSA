@@ -737,14 +737,159 @@ public class LinkedList {
         }
         return head;
     }
+
+    public Node sortOnesTwosOpt(Node head)
+    {
+        if(head==null || head.next==null)
+        {
+            return head;
+        }
+        Node zeroHead = new Node(-1);
+        Node zero = zeroHead;
+        Node oneHead = new Node(-1);
+        Node one = oneHead;
+        Node twoHead = new Node(-1);
+        Node two = twoHead;
+        Node temp = head;
+        while(temp!=null)
+        {
+            if(temp.data==0)
+            {
+               zero.next = temp;
+               zero = zero.next;
+            }
+            else if(temp.data==1)
+            {
+               one.next = temp;
+               one = one.next;
+            }
+            else if(temp.data==2)
+            {
+               two.next = temp;
+               two = two.next;
+            }
+            temp = temp.next;
+        }
+
+        zero.next = oneHead.next != null ? oneHead.next : twoHead.next;
+        one.next = twoHead.next;
+        two.next = null;
+        return zeroHead.next;
+    }
+
+    public Node findIntersection(Node head1,Node head2)
+    {
+        if(head1==null||head2==null)
+        {
+            return null;
+        }
+        HashMap<Node,Integer> result = new HashMap<>();
+        Node temp = head1;
+        while(temp!=null)
+        {
+            result.put(temp,1);
+            temp = temp.next;
+        }
+        temp = head2;
+        while(temp!=null)
+        {
+            if(result.containsKey(temp))
+            {
+                return temp;
+            }
+            temp = temp.next;
+        }
+        return  null;
+    }
+    
+    public Node findCollision(Node large,Node shorter,int d)
+    {
+        for(int i=0;i<d;i++)
+        {
+            large = large.next;
+        }
+        while(large!=null)
+        {
+            if(shorter==large)
+            {
+                return large;
+            }
+            shorter = shorter.next;
+            large = large.next;
+        }
+        return null;
+    }
+    public Node findInteresectNodeBetter(Node head1,Node head2)
+    {
+        if(head1==null || head2==null)
+        {
+            return null;
+        }
+
+        int count1 = 0;
+        int count2 = 0;
+        Node temp1 = head1;
+        Node temp2 = head2;
+        while(temp1!=null)
+        {
+            count1++;
+            temp1 = temp1.next;
+        }
+        while(temp2!=null)
+        {
+            count2++;
+            temp2 = temp2.next;
+        }
+
+        if(count1>count2)
+        {
+            return findCollision(head1,head2,count1-count2);
+        }
+        return findCollision(head2,head1,count2-count1);
+    }
+
+    public Node findIntersectionNodeOpt(Node head1,Node head2)
+    {
+        if(head1==null || head2==null)
+        {
+            return head1;
+        }
+        Node temp1 = head1;
+        Node temp2 = head2;
+        while(temp1!=temp2)
+        {
+            
+            temp1 = temp1.next;
+            temp2 = temp2.next;
+            if(temp1==temp2)
+            {
+                return temp1;
+            }
+            if(temp1==null)
+            {
+                temp1 = head2;
+            }
+            if(temp2==null)
+            {
+                temp2 = head1;
+            }
+
+        }
+        return null;
+    }
     public static void main(String[] args)
     {
-        int[] arr = new int[]{2,1,1,1};
+        int[] arr = new int[]{4,5,6,7};
+        int[] arr1 = new int[]{1,3};
         LinkedList l = new LinkedList();
+        LinkedList l1 = new LinkedList();
         l.head = l.convertArrayLL(arr);
+        l1.head = l1.convertArrayLL(arr1);
+        l1.head.next.next = l.head.next.next;
         // l.head = l.sortLLOpt(l.head);
-        l.head = l.sortZeroOnesTwos(l.head);
-        l.printLL(l.head);
+        // l.head = l.sortOnesTwosOpt(l.head);
+        System.out.println(l.findIntersectionNodeOpt(l.head,l1.head));
+        // l.printLL(l.head);
         // l.head = l.deleteMiddleNode(l.head);
         // l.head = l.convertArrayLL(arr);
         // l.head = l.oddEvenLLOpt(l.head);
