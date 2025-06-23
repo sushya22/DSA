@@ -1,5 +1,6 @@
 package LinkedList;
 import java.util.Scanner;
+import java.util.ArrayList;
 class Node{
     int data;
     Node next;
@@ -287,15 +288,151 @@ public class DoublyLinkedList {
 
         System.out.println(slow.data);
     }
+
+    public Node deleteKey(Node head,int k)
+    {
+        Node temp = head;
+        while(temp!=null)
+        {
+            if(temp.data == k)
+            {
+                if(temp==head)
+                {
+                    head = head.next;
+                }
+                Node prevNode = temp.prev;
+                Node nextNode = temp.next;
+                if(prevNode!=null) prevNode.next = nextNode;
+                if(nextNode!=null) nextNode.prev = prevNode;
+                temp = temp.next;
+            }
+            else
+            {
+                temp=temp.next;
+            }
+        }
+        return head;
+    }
+
+    public void printSumPairs(Node head, int k)
+    {
+        Node temp1 = head;
+        Node temp2;
+        ArrayList<ArrayList<Integer>> result = new ArrayList<ArrayList<Integer>>();
+        while(temp1!=null)
+        {
+           temp2 = temp1.next;
+           while(temp2!=null)
+           {
+            if(temp1.data+temp2.data==k)
+            {
+                ArrayList<Integer> temp = new ArrayList<>();
+                temp.add(temp1.data);
+                temp.add(temp2.data);
+                result.add(temp);
+            }
+            if(temp1.data+temp2.data>k)
+            {
+                break;
+            }
+            temp2 = temp2.next;
+           }
+           temp1 = temp1.next;
+        }
+
+        for(ArrayList<Integer> arr:result)
+        {
+            for(Integer i:arr)
+            {
+                System.out.print(i+" ");
+            }
+            System.out.println();
+        }
+    }
+
+    public Node findTailNode(Node head)
+    {
+        Node temp = head;
+        if(temp==null)
+        {
+            return temp;
+        }
+        while(temp.next!=null)
+        {
+            temp = temp.next;
+        }
+        return temp;
+        
+    }
+
+    public void printSumPairsOpt(Node head,int k)
+    {
+        ArrayList<ArrayList<Integer>> result = new ArrayList<ArrayList<Integer>>();
+        Node right = findTailNode(head);
+        Node left = head;
+        while(left.data<right.data)
+        {
+            if(left.data+right.data==k)
+            {
+                ArrayList<Integer> arr = new ArrayList<>();
+                arr.add(left.data);
+                arr.add(right.data);
+                result.add(arr);
+                left = left.next;
+                right = right.prev;
+            }
+            else if(left.data+right.data<k)
+            {
+                left = left.next;
+            }
+            else
+            {
+                right = right.prev;
+            }
+        }
+
+        for(ArrayList<Integer> ar:result)
+        {
+            for(Integer i:ar)
+            {
+                System.out.print(i+" ");
+            }
+            System.out.println();
+        }
+    }
+
+    public Node removeDuplicates(Node head)
+    {
+        Node temp = head;
+        Node nextNode = head;
+        while(nextNode!=null)
+        {
+            nextNode = nextNode.next;
+            while(nextNode!=null && temp.data==nextNode.data )
+            {
+                nextNode = nextNode.next;
+            }
+
+            temp.next = nextNode;
+            if(nextNode!=null) nextNode.prev = temp;
+            temp = nextNode;
+        }
+        return head;
+    }
     public static void main(String[] args)
     {
-        int[] arr = new int[]{1,2};
+        int[] arr = new int[]{2};
         DoublyLinkedList d = new DoublyLinkedList();
         d.arrayToDLinkedList(arr);
         Scanner sc = new Scanner(System.in);
         // d.insertBeforeNode(d.head.next.next);
         // d.reverseDLL();
-        d.findMiddleOpt();
+        // d.findMiddleOpt();
         // d.printDDL();
+        // int n = sc.nextInt();
+        // d.head = d.deleteKey(d.head, 2);
+        // d.printSumPairsOpt(d.head,n);
+        d.head = d.removeDuplicates(d.head);
+        d.printDDL();
     }
 }

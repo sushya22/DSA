@@ -877,18 +877,133 @@ public class LinkedList {
         }
         return null;
     }
+
+    public Node reverseLLRecursionOpt(Node head)
+    {
+        if(head==null || head.next==null)
+        {
+            return head;
+        }
+        Node newHead = reverseLLRecursionOpt(head.next);
+        Node front = head.next;
+        front.next = head;
+        head.next = null;
+        return newHead;
+    }
+
+    public Node addNo1(Node head)
+    {
+        Node reversehead = reverseLLRecursionOpt(head);
+        Node temp = reversehead;
+        int carry = 1;
+        while(temp!=null)
+        {
+            int sum = temp.data + carry;
+            if(sum<10)
+            {
+                temp.data = sum;
+                carry = 0;
+                break;
+            }
+            else
+            {
+                temp.data = 0;
+                carry = 1;
+            }
+            temp = temp.next;
+
+        }
+
+        head = reverseLLRecursionOpt(reversehead);
+        if(carry==1)
+        {
+            Node newNode = new Node(1);
+            newNode.next = head;
+            return newNode;
+        }
+        return head;
+    }
+
+    public int helpAdd1(Node head)
+    {
+        if(head==null)
+        {
+            return 1;
+        }
+        int carry = helpAdd1(head.next);
+        if(head.data+carry<10)
+        {
+            head.data = head.data+carry;
+            return 0;
+        }
+        else
+        {
+            head.data = 0;
+            return 1;
+        }
+    }
+
+    public Node add1llOpt(Node head)
+    {
+        int carry = helpAdd1(head);
+        if(carry==1)
+        {
+            Node newNode = new Node(1);
+            newNode.next = head;
+            return newNode;
+        }
+        return head;
+
+    }
+
+    public Node add2Numbers(Node head1,Node head2)
+    {
+        Node dummyNode = new Node(-1);
+        Node current = dummyNode;
+        int carry = 0;
+        int sum = 0;
+        while(head1!=null || head2!=null)
+        {
+            sum = carry;
+            if(head1!=null) 
+            {
+                sum+=head1.data;
+                head1 = head1.next;
+            }
+            if(head2!=null) 
+            {
+                sum+=head2.data;
+                head2 = head2.next;
+            }
+
+            carry = sum/10;
+            Node n = new Node(sum%10);
+            current.next = n;
+            current = current.next;
+        }
+        if(carry==1)
+        {
+            Node n = new Node(1);
+            current.next = n;
+        }
+        return dummyNode.next;
+    }
     public static void main(String[] args)
     {
-        int[] arr = new int[]{4,5,6,7};
-        int[] arr1 = new int[]{1,3};
+        int[] arr = new int[]{9,9};
+        int[] arr1 = new int[]{1};
         LinkedList l = new LinkedList();
         LinkedList l1 = new LinkedList();
         l.head = l.convertArrayLL(arr);
         l1.head = l1.convertArrayLL(arr1);
-        l1.head.next.next = l.head.next.next;
+        LinkedList result = new LinkedList();
+        result.head = l.add2Numbers(l.head,l1.head);
+        result.printLL(result.head);
+        
+        // l1.head.next.next = l.head.next.next;
         // l.head = l.sortLLOpt(l.head);
         // l.head = l.sortOnesTwosOpt(l.head);
-        System.out.println(l.findIntersectionNodeOpt(l.head,l1.head));
+        // System.out.println(l.findIntersectionNodeOpt(l.head,l1.head));
         // l.printLL(l.head);
         // l.head = l.deleteMiddleNode(l.head);
         // l.head = l.convertArrayLL(arr);
